@@ -11,11 +11,11 @@ import android.widget.TextView;
 import java.util.LinkedList;
 
 public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.NewsViewHolder> {
-    private final LinkedList<String> titleList;
-    private final LinkedList<String> descriptionList;
+    private LinkedList<String> titleList;
+    private LinkedList<String> descriptionList;
     private LayoutInflater inflater;
 
-    RecyclerAdapter(Context context, LinkedList<String> titleList, LinkedList<String> descriptionList){
+    RecyclerAdapter(Context context, LinkedList<String> titleList, LinkedList<String> descriptionList) {
         inflater = LayoutInflater.from(context);
         this.titleList = titleList;
         this.descriptionList = descriptionList;
@@ -39,16 +39,24 @@ public class RecyclerAdapter extends RecyclerView.Adapter<RecyclerAdapter.NewsVi
 
     @Override
     public int getItemCount() {
-        return titleList.size();
+        if (titleList == null || descriptionList == null) return 0;
+        else return titleList.size();
     }
 
-    class NewsViewHolder extends RecyclerView.ViewHolder{
+    public void swapData(LinkedList<String> mTitleList, LinkedList<String> mDescriptionList) {
+        titleList = mTitleList;
+        descriptionList = mDescriptionList;
+        notifyDataSetChanged();
+
+    }
+
+    class NewsViewHolder extends RecyclerView.ViewHolder {
 
         public final TextView titleText;
         public final TextView descriptionText;
         final RecyclerAdapter adapter;
 
-        public NewsViewHolder(View itemView, RecyclerAdapter adapter){
+        public NewsViewHolder(View itemView, RecyclerAdapter adapter) {
             super(itemView);
             titleText = itemView.findViewById(R.id.title);
             descriptionText = itemView.findViewById(R.id.description);

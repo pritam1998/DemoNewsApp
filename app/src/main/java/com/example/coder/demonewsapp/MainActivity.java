@@ -16,9 +16,8 @@ public class MainActivity extends AppCompatActivity {
     TextView textView;
     RecyclerView recyclerView;
     private RecyclerAdapter adapter;
-
-//    private LinkedList<String> titleData = new LinkedList<>();
-//    private LinkedList<String> descriptionData = new LinkedList<>();
+    ConnectivityManager connectivityManager;
+    NetworkInfo networkInfo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,24 +30,31 @@ public class MainActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.recyclerView);
         textView = findViewById(R.id.text);
 
-        ConnectivityManager connectivityManager = (ConnectivityManager)
-                getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo networkInfo = null;
-        if (connectivityManager != null){
-            networkInfo = connectivityManager.getActiveNetworkInfo();
-        }
-
-        if (networkInfo != null && networkInfo.isConnected()){
-            new FetchNewsData(titleData, descriptionData).execute();
-            textView.setText("Fetching...");
-        }
-        else{
-            textView.setText("No network!");
-        }
+        connectivityManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        networkInfo = null;
 
         adapter = new RecyclerAdapter(this, titleData, descriptionData);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         textView.setText("Fetched!");
+
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+
+
+        if (connectivityManager != null) {
+            networkInfo = connectivityManager.getActiveNetworkInfo();
+        }
+
+        if (networkInfo != null && networkInfo.isConnected()) {
+            new FetchNewsData(adapter).execute();
+            textView.setText("Fetching...");
+        } else {
+            textView.setText("No network!");
+        }
+
     }
 }
