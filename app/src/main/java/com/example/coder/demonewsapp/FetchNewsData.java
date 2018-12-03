@@ -1,6 +1,8 @@
 package com.example.coder.demonewsapp;
 
 import android.os.AsyncTask;
+import android.support.v7.widget.RecyclerView;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,10 +14,12 @@ public class FetchNewsData extends AsyncTask<Void, Void, String> {
 
     LinkedList<String> mTitleList;
     LinkedList<String> mDescriptionList;
+    RecyclerAdapter adapter;
 
-    FetchNewsData(LinkedList<String> titleList, LinkedList<String> descriptionList){
-        this.mTitleList = titleList;
-        this.mDescriptionList = descriptionList;
+    public FetchNewsData(RecyclerAdapter adapter) {
+        this.adapter = adapter;
+        mTitleList = new LinkedList<>();
+        mDescriptionList = new LinkedList<>();
     }
 
 
@@ -49,6 +53,9 @@ public class FetchNewsData extends AsyncTask<Void, Void, String> {
                 }
                 i++;
             }
+
+            adapter.swapData(mTitleList,mDescriptionList);
+
         }catch (JSONException e){
             e.printStackTrace();
         }
